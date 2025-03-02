@@ -1,0 +1,13 @@
+{
+	"attributes":
+	{
+		"common":
+		{
+			"armor_negation":20.0,
+			"impact":0.7,
+			"max_strikes":10,
+                        "speed_bonus":-0.2
+		}
+	},
+	"type":"wom:gesetz"
+}

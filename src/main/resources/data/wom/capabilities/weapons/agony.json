@@ -1,0 +1,12 @@
+{
+	"attributes":
+	{
+		"two_hand":
+		{
+			"impact":0.3,
+			"max_strikes":4,
+                        "speed_bonus":-0.2
+		}
+	},
+	"type":"wom:agony"
+}

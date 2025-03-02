@@ -1,0 +1,118 @@
+// Source code is decompiled from a .class file using FernFlower decompiler.
+package reascer.wom.skill.identity;
+
+import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.PoseStack;
+import java.util.UUID;
+import net.minecraft.client.gui.GuiGraphics;
+import net.minecraft.core.particles.DustParticleOptions;
+import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.sounds.SoundEvents;
+import net.minecraft.world.damagesource.DamageSource;
+import net.minecraft.world.entity.player.Player;
+import net.minecraftforge.api.distmarker.Dist;
+import net.minecraftforge.api.distmarker.OnlyIn;
+import org.joml.Vector3f;
+import reascer.wom.skill.WOMSkillDataKeys;
+import yesman.epicfight.api.utils.AttackResult.ResultType;
+import yesman.epicfight.client.gui.BattleModeGui;
+import yesman.epicfight.skill.Skill;
+import yesman.epicfight.skill.SkillContainer;
+import yesman.epicfight.skill.SkillDataKey;
+import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
+import yesman.epicfight.world.entity.eventlistener.PlayerEventListener.EventType;
+
+public class BiPhasedSkill extends Skill {
+   private static final UUID EVENT_UUID = UUID.fromString("05e61b67-4531-4127-b973-9f572acede5c");
+
+   public BiPhasedSkill(Skill.Builder<? extends Skill> builder) {
+      super(builder);
+   }
+
+   public void onInitiate(SkillContainer container) {
+      container.getExecuter().getEventListener().addEventListener(EventType.DODGE_SUCCESS_EVENT, EVENT_UUID, (event) -> {
+         if ((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.CHARGE.get()) < 5) {
+            container.getDataManager().setDataSync((SkillDataKey)WOMSkillDataKeys.CHARGE.get(), (Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.CHARGE.get()) + 1, (ServerPlayer)((ServerPlayerPatch)event.getPlayerPatch()).getOriginal());
+            System.out.println(container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.CHARGE.get()));
+            if ((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.CHARGE.get()) == 5) {
+               container.getDataManager().setDataSync((SkillDataKey)WOMSkillDataKeys.TIMER.get(), 400, (ServerPlayer)((ServerPlayerPatch)event.getPlayerPatch()).getOriginal());
+            }
+         }
+
+      });
+      container.getExecuter().getEventListener().addEventListener(EventType.HURT_EVENT_PRE, EVENT_UUID, (event) -> {
+         if ((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.CHARGE.get()) == 5 && ((DamageSource)event.getDamageSource()).m_7639_() != null) {
+            event.setCanceled(true);
+            event.setResult(ResultType.MISSED);
+         }
+
+      });
+   }
+
+   public void onRemoved(SkillContainer container) {
+      container.getExecuter().getEventListener().removeListener(EventType.DODGE_SUCCESS_EVENT, EVENT_UUID);
+      container.getExecuter().getEventListener().removeListener(EventType.HURT_EVENT_PRE, EVENT_UUID);
+   }
+
+   @OnlyIn(Dist.CLIENT)
+   public boolean shouldDraw(SkillContainer container) {
+      return true;
+   }
+
+   @OnlyIn(Dist.CLIENT)
+   public void drawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y) {
+      PoseStack poseStack = guiGraphics.m_280168_();
+      poseStack.m_85836_();
+      poseStack.m_252880_(0.0F, (float)gui.getSlidingProgression(), 0.0F);
+      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+      String string = "";
+      if ((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.CHARGE.get()) == 6) {
+         RenderSystem.setShaderColor(0.5F, 0.5F, 0.5F, 0.5F);
+         guiGraphics.m_280411_(this.getSkillTexture(), (int)x, (int)y, 24, 24, 0.0F, 0.0F, 1, 1, 1, 1);
+         string = String.valueOf((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.TIMER.get()) / 20);
+      } else if ((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.CHARGE.get()) < 5) {
+         string = String.valueOf(container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.CHARGE.get()));
+         guiGraphics.m_280411_(new ResourceLocation("wom", "textures/gui/skills/bi_phased_blue.png"), (int)x, (int)y, 24, 24, 0.0F, 0.0F, 1, 1, 1, 1);
+      } else {
+         string = String.valueOf((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.TIMER.get()) / 20);
+         guiGraphics.m_280411_(new ResourceLocation("wom", "textures/gui/skills/bi_phased_red.png"), (int)x, (int)y, 24, 24, 0.0F, 0.0F, 1, 1, 1, 1);
+      }
+
+      RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+      guiGraphics.drawString(gui.font, string, x + 13.0F - (float)(gui.font.m_92895_(string) / 2), y + 10.0F, 16777215, true);
+      poseStack.m_85849_();
+   }
+
+   public void updateContainer(SkillContainer container) {
+      super.updateContainer(container);
+      if (!container.getExecuter().isLogicalClient()) {
+         if ((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.TIMER.get()) == 1 && (Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.CHARGE.get()) == 5) {
+            ((ServerLevel)((Player)container.getExecuter().getOriginal()).m_9236_()).m_6263_((Player)null, ((Player)container.getExecuter().getOriginal()).m_20185_(), ((Player)container.getExecuter().getOriginal()).m_20186_() + (double)(((Player)container.getExecuter().getOriginal()).m_20206_() / 2.0F), ((Player)container.getExecuter().getOriginal()).m_20189_(), SoundEvents.f_11922_, ((Player)container.getExecuter().getOriginal()).m_5720_(), 1.0F, 0.5F);
+         }
+
+         if ((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.TIMER.get()) == 1 && (Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.CHARGE.get()) == 6) {
+            ((ServerLevel)((Player)container.getExecuter().getOriginal()).m_9236_()).m_8767_(new DustParticleOptions(new Vector3f(0.0F, 0.0F, 1.0F), 1.0F), ((Player)container.getExecuter().getOriginal()).m_20185_(), ((Player)container.getExecuter().getOriginal()).m_20186_() + (double)(((Player)container.getExecuter().getOriginal()).m_20206_() / 2.0F), ((Player)container.getExecuter().getOriginal()).m_20189_(), 20, 0.5, 0.8, 0.5, 0.2);
+         }
+
+         if ((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.TIMER.get()) == 400 && (Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.CHARGE.get()) == 5) {
+            ((ServerLevel)((Player)container.getExecuter().getOriginal()).m_9236_()).m_6263_((Player)null, ((Player)container.getExecuter().getOriginal()).m_20185_(), ((Player)container.getExecuter().getOriginal()).m_20186_() + (double)(((Player)container.getExecuter().getOriginal()).m_20206_() / 2.0F), ((Player)container.getExecuter().getOriginal()).m_20189_(), SoundEvents.f_11924_, ((Player)container.getExecuter().getOriginal()).m_5720_(), 1.0F, 1.0F);
+            ((ServerLevel)((Player)container.getExecuter().getOriginal()).m_9236_()).m_8767_(new DustParticleOptions(new Vector3f(1.0F, 0.0F, 0.0F), 1.0F), ((Player)container.getExecuter().getOriginal()).m_20185_(), ((Player)container.getExecuter().getOriginal()).m_20186_() + (double)(((Player)container.getExecuter().getOriginal()).m_20206_() / 2.0F), ((Player)container.getExecuter().getOriginal()).m_20189_(), 20, 0.5, 0.8, 0.5, 0.2);
+         }
+
+         if ((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.TIMER.get()) > 0) {
+            container.getDataManager().setDataSync((SkillDataKey)WOMSkillDataKeys.TIMER.get(), (Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.TIMER.get()) - 1, (ServerPlayer)((ServerPlayerPatch)container.getExecuter()).getOriginal());
+            if ((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.TIMER.get()) == 0) {
+               container.getDataManager().setDataSync((SkillDataKey)WOMSkillDataKeys.TIMER.get(), 400, (ServerPlayer)((ServerPlayerPatch)container.getExecuter()).getOriginal());
+               if ((Integer)container.getDataManager().getDataValue((SkillDataKey)WOMSkillDataKeys.CHARGE.get()) == 5) {
+                  container.getDataManager().setDataSync((SkillDataKey)WOMSkillDataKeys.CHARGE.get(), 6, (ServerPlayer)((ServerPlayerPatch)container.getExecuter()).getOriginal());
+               } else {
+                  container.getDataManager().setDataSync((SkillDataKey)WOMSkillDataKeys.CHARGE.get(), 0, (ServerPlayer)((ServerPlayerPatch)container.getExecuter()).getOriginal());
+               }
+            }
+         }
+      }
+
+   }
+}

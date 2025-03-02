@@ -1,0 +1,12 @@
+{
+	"attributes":
+	{
+		"common":
+		{
+			"impact":1.0,
+			"max_strikes":3,
+                        "speed_bonus":-0.05
+		}
+	},
+	"type":"wom:ender_blaster"
+}

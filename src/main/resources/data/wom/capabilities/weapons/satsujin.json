@@ -1,0 +1,12 @@
+{
+	"attributes":
+	{
+		"common":
+		{
+			"impact":0.4,
+			"max_strikes":4,
+                        "speed_bonus":-0.25
+		}
+	},
+	"type":"wom:satsujin"
+}

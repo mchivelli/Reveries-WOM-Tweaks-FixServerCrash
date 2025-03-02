@@ -1,0 +1,12 @@
+{
+	"attributes":
+	{
+		"common":
+		{
+			"impact":0.4,
+			"max_strikes":6,
+                        "speed_bonus":-0.05
+		}
+	},
+	"type":"wom:ruine"
+}
