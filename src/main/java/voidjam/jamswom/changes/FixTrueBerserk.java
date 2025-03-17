@@ -127,7 +127,9 @@ public class FixTrueBerserk extends WeaponInnateSkill {
 
                   container.deactivate();
                } else {
-                  container.getExecuter().getOriginal().setHealth(((Player)container.getExecuter().getOriginal()).getHealth() - 1);
+                  if (!container.getExecuter().getOriginal().isCreative()) {
+                     container.getExecuter().getOriginal().setHealth(((Player)container.getExecuter().getOriginal()).getHealth() - 1);
+                  }
                   //EpicFightDamageSource selfdamage = new EpicFightDamageSource(((Player)container.getExecuter().getOriginal()).level().damageSources().magic());
                   //selfdamage.setStunType(StunType.NONE);
                   //((Player)container.getExecuter().getOriginal()).hurt(selfdamage, ((Player)container.getExecuter().getOriginal()).getMaxHealth() * 0.04F);

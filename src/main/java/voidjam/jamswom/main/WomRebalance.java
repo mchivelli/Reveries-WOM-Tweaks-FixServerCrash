@@ -11,18 +11,18 @@ import voidjam.jamswom.changes.WOMRSkillDataKeys;
 import voidjam.jamswom.gameassets.WOMRAnimations;
 // The value here should match an entry in the META-INF/mods.toml file
 @Mod("jamswom")
-public class WomRebalance
+public class WOMRebalance
 {
 	public static final String MODID = "jamswom";
-	public static final String CONFIG_FILE_PATH = WomRebalance.MODID + ".toml";
+	public static final String CONFIG_FILE_PATH = WOMRebalance.MODID + ".toml";
 	public static final Logger LOGGER = LogManager.getLogger(MODID);
-	private static WomRebalance instance;
+	private static WOMRebalance instance;
 	
-	public static WomRebalance getInstance() {
+	public static WOMRebalance getInstance() {
 		return instance;
 	}
 	
-    public WomRebalance() {
+    public WOMRebalance() {
     	instance = this;
     	IEventBus bus = FMLJavaModLoadingContext.get().getModEventBus();
     	MinecraftForge.EVENT_BUS.register(this);
