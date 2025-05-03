@@ -34,31 +34,36 @@ public abstract class SoulSnatchMixin {
         if (!player.onGround() && !player.isInWater() && player.fallDistance < 0.1F
                 && (player.level().isEmptyBlock(player.blockPosition().below())
                 || player.yo - (double)player.blockPosition().getY() > 0.2)) {
-            executer.playAnimationSynchronized(WOMAnimations.RUINE_REDEMPTION, 0.0F);
-            skillContainer.getDataManager().setDataSync(WOMSkillDataKeys.REDEMPTION.get(), true, player);
-            if (skillContainer.getStack() <= 1) {
-                if (executer.getSkill(EpicFightSkills.FORBIDDEN_STRENGTH) != null) {
+             if (skillContainer.getStack() <= 1) {
+                if (executer.getStamina() - (executer.getMaxStamina() * 0.3F) > 0) {
+                    executer.playAnimationSynchronized(WOMAnimations.RUINE_REDEMPTION, 0.0F);
+                    skillContainer.getDataManager().setDataSync(WOMSkillDataKeys.REDEMPTION.get(), true, player);
                     executer.consumeForSkill(skill, Skill.Resource.STAMINA,
-                            (24.0F - skillContainer.getResource()) * 0.5F);
-                    skillContainer.getSkill().setConsumptionSynchronize(executer, 0.0F); // Use static method
-                } else {
-                    executer.consumeForSkill(skill, Skill.Resource.STAMINA,
-                            (executer.getMaxStamina()) * 0.5F);
-                    skillContainer.getDataManager().setDataSync(WOMSkillDataKeys.EXPIATION.get(), false, player);
+                            (executer.getMaxStamina()) * 0.3F);
+                    if (executer.getSkill(EpicFightSkills.FORBIDDEN_STRENGTH) != null) {
+                        executer.consumeForSkill(skill, Skill.Resource.STAMINA,
+                                (24.0F - skillContainer.getResource()) * 0.5F);
+                        skillContainer.getSkill().setConsumptionSynchronize(executer, 0.0F); // Use static method
+                    } else {
+                        skillContainer.getDataManager().setDataSync(WOMSkillDataKeys.EXPIATION.get(), false, player);
+                    }
                 }
             }
         } else if (player.isSprinting()) {
-            executer.playAnimationSynchronized(WOMAnimations.RUINE_EXPIATION, 0.0F);
-            skillContainer.getDataManager().setDataSync(WOMSkillDataKeys.EXPIATION.get(), true, player);
             if (skillContainer.getStack() <= 1) {
-                if (executer.getSkill(EpicFightSkills.FORBIDDEN_STRENGTH) != null) {
+                if (executer.getStamina() - (executer.getMaxStamina() * 0.4F) > 0) {
                     executer.consumeForSkill(skill, Skill.Resource.STAMINA,
-                            (24.0F - skillContainer.getResource()) * 0.5F);
-                    skillContainer.getSkill().setConsumptionSynchronize(executer, 0.0F); // Use static method
-                } else {
-                    executer.consumeForSkill(skill, Skill.Resource.STAMINA,
-                            (executer.getMaxStamina()) * 0.5F);
-                    skillContainer.getDataManager().setDataSync(WOMSkillDataKeys.EXPIATION.get(), false, player);
+                            (executer.getMaxStamina()) * 0.4F);
+                    executer.playAnimationSynchronized(WOMAnimations.RUINE_EXPIATION, 0.0F);
+                    skillContainer.getDataManager().setDataSync(WOMSkillDataKeys.EXPIATION.get(), true, player);
+
+                    if (executer.getSkill(EpicFightSkills.FORBIDDEN_STRENGTH) != null) {
+                        executer.consumeForSkill(skill, Skill.Resource.STAMINA,
+                                (24.0F - skillContainer.getResource()) * 0.5F);
+                        skillContainer.getSkill().setConsumptionSynchronize(executer, 0.0F); // Use static method
+                    } else {
+                        skillContainer.getDataManager().setDataSync(WOMSkillDataKeys.EXPIATION.get(), false, player);
+                    }
                 }
             }
         } else if (skillContainer.getStack() == 9 || player.isCreative()) {
