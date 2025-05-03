@@ -6,7 +6,8 @@
     "compatibilityLevel": "JAVA_17",
     "mixins": [
       "BiPhasedSkillMixin",
-      "BasicAttackMixin"
+      "BasicAttackMixin",
+      "SoulSnatchMixin"
     ],
     "injectors": {
       "defaultRequire": 1
