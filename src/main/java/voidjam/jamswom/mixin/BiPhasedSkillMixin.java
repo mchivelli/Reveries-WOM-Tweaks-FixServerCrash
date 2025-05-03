@@ -2,6 +2,7 @@ package voidjam.jamswom.mixin;
 
 import java.util.UUID;
 
+import net.minecraftforge.api.distmarker.Dist;
 import org.joml.Vector3f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.Overwrite;
@@ -66,6 +67,7 @@ public class BiPhasedSkillMixin {
     }
 
     @Inject(method = "drawOnGui", at = @At("HEAD"), cancellable = true, remap = false)
+    @OnlyIn(Dist.CLIENT)
     public void replaceDrawOnGui(BattleModeGui gui, SkillContainer container, GuiGraphics guiGraphics, float x, float y, CallbackInfo ci) {
         ci.cancel();
         

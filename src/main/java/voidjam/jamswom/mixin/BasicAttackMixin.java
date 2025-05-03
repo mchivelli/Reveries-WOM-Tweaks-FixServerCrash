@@ -16,8 +16,14 @@ import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.attributes.Attribute;
 import net.minecraft.world.entity.ai.attributes.AttributeModifier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
+import voidjam.jamswom.main.WOMRConfigs;
 import yesman.epicfight.api.animation.property.AnimationProperty.StaticAnimationProperty;
+import yesman.epicfight.gameasset.EpicFightSkills;
 import yesman.epicfight.skill.BasicAttack;
+import yesman.epicfight.skill.Skill;
+import yesman.epicfight.skill.Skill.ActivateType;
+import yesman.epicfight.skill.Skill.Resource;
+import yesman.epicfight.skill.SkillCategories;
 import yesman.epicfight.skill.SkillContainer;
 import yesman.epicfight.world.capabilities.entitypatch.player.ServerPlayerPatch;
 import yesman.epicfight.world.effect.EpicFightMobEffects;
@@ -33,8 +39,6 @@ public class BasicAttackMixin {
             -0.45,
             AttributeModifier.Operation.MULTIPLY_TOTAL
     );
-   public BasicAttackMixin() {
-   }
 
    @Inject(
       method = {"onInitiate"},
@@ -43,7 +47,7 @@ public class BasicAttackMixin {
    )
    public void onInitiate(SkillContainer container, CallbackInfo ci) {
       container.getExecuter().getEventListener().addEventListener(EventType.ATTACK_ANIMATION_END_EVENT, ATTACK_UUID, (event) -> {
-         if (container.getExecuter().getStamina() - 2F <= 0.0F) {
+         if (!(WOMRConfigs.BA_STAMINA_CONSUMPTION.get().floatValue() == 0) && container.getExecuter().getStamina() - WOMRConfigs.BA_STAMINA_CONSUMPTION.get().floatValue() <= 0.0F) {
             container.getExecuter().getOriginal().getAttribute(Attributes.ATTACK_SPEED).removeModifier(ATTACK_UUID);
          }
       });
@@ -57,8 +61,8 @@ public class BasicAttackMixin {
    
    public void executeOnServer(ServerPlayerPatch executer, FriendlyByteBuf args, CallbackInfo ci) {
       executer.getOriginal().getAttribute(Attributes.ATTACK_SPEED).removePermanentModifier(ATTACK_UUID);
-      if (executer.getStamina() - 2F > 0.0F) {
-         executer.setStamina(executer.getStamina() - 2F);
+      if (executer.getStamina() - WOMRConfigs.BA_STAMINA_CONSUMPTION.get().floatValue() > 0.0F) {
+         executer.consumeForSkill(EpicFightSkills.BASIC_ATTACK, Resource.STAMINA, WOMRConfigs.BA_STAMINA_CONSUMPTION.get().floatValue(), true);
          executer.modifyLivingMotionByCurrentItem(true);
       } else {
          executer.setStamina(0.0F);

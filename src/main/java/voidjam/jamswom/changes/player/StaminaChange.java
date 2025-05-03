@@ -9,6 +9,7 @@ import net.minecraftforge.event.entity.EntityJoinLevelEvent;
 import net.minecraftforge.eventbus.api.SubscribeEvent;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber;
 import net.minecraftforge.fml.common.Mod.EventBusSubscriber.Bus;
+import voidjam.jamswom.main.WOMRConfigs;
 import yesman.epicfight.world.entity.ai.attribute.EpicFightAttributes;
 
 @EventBusSubscriber(
@@ -21,7 +22,7 @@ public class StaminaChange {
     @SubscribeEvent
     public static void onSpawnEvent(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            player.getAttribute(EpicFightAttributes.MAX_STAMINA.get()).addTransientModifier(new AttributeModifier(ATTRIBUTE_MAX_UUID, "max_stamina_increase", 2F, Operation.MULTIPLY_BASE));
+            player.getAttribute(EpicFightAttributes.MAX_STAMINA.get()).addTransientModifier(new AttributeModifier(ATTRIBUTE_MAX_UUID, "max_stamina_increase", WOMRConfigs.BASE_STAMINA_INCREASE.get().floatValue(), Operation.ADDITION));
         }
     }
 }
