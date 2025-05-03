@@ -1,5 +1,7 @@
 package voidjam.jamswom.main;
 
+import net.minecraftforge.fml.ModLoadingContext;
+import net.minecraftforge.fml.config.ModConfig;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -29,6 +31,6 @@ public class WOMRebalance
 		bus.addListener(WOMRAnimations::registerAnimations);
 		WOMRSkillDataKeys.DATA_KEYS.register(bus);
 
-        //ModLoadingContext.get().registerExtensionPoint(ConfigScreenHandler.ConfigScreenFactory.class, () -> new ConfigScreenHandler.ConfigScreenFactory(IngameConfigurationScreen::new));
+        ModLoadingContext.get().registerConfig(ModConfig.Type.SERVER, WOMRConfigs.SPEC);
     }
 }

@@ -3,7 +3,7 @@ loaderVersion="[47,)" #mandatory This is typically bumped every Minecraft versio
 license="Academic Free License v3.0"
 [[mods]] #mandatory
 modId="jamswom" #mandatory
-version="20.9.1" #mandatory
+version="20.9.3" #mandatory
 displayName="Reverie's Weapons Of Miracles Rebalance" #mandatory
 authors="Voidy Jam" #optional
 description='''${mod_description}'''
