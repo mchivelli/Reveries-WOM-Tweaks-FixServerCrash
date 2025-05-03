@@ -42,6 +42,8 @@ public abstract class SoulSnatchMixin {
                             (24.0F - skillContainer.getResource()) * 0.5F);
                     skillContainer.getSkill().setConsumptionSynchronize(executer, 0.0F); // Use static method
                 } else {
+                    executer.consumeForSkill(skill, Skill.Resource.STAMINA,
+                            (executer.getMaxStamina()) * 0.5F);
                     skillContainer.getDataManager().setDataSync(WOMSkillDataKeys.EXPIATION.get(), false, player);
                 }
             }
@@ -54,6 +56,8 @@ public abstract class SoulSnatchMixin {
                             (24.0F - skillContainer.getResource()) * 0.5F);
                     skillContainer.getSkill().setConsumptionSynchronize(executer, 0.0F); // Use static method
                 } else {
+                    executer.consumeForSkill(skill, Skill.Resource.STAMINA,
+                            (executer.getMaxStamina()) * 0.5F);
                     skillContainer.getDataManager().setDataSync(WOMSkillDataKeys.EXPIATION.get(), false, player);
                 }
             }
