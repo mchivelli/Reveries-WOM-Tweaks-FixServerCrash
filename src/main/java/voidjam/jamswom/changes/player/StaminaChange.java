@@ -22,7 +22,11 @@ public class StaminaChange {
     @SubscribeEvent
     public static void onSpawnEvent(EntityJoinLevelEvent event) {
         if (event.getEntity() instanceof ServerPlayer player) {
-            player.getAttribute(EpicFightAttributes.MAX_STAMINA.get()).addTransientModifier(new AttributeModifier(ATTRIBUTE_MAX_UUID, "max_stamina_increase", WOMRConfigs.BASE_STAMINA_INCREASE.get().floatValue(), Operation.ADDITION));
+            var attribute = player.getAttribute(EpicFightAttributes.MAX_STAMINA.get());
+            // Check if attribute exists and modifier is not already applied to prevent duplicates
+            if (attribute != null && attribute.getModifier(ATTRIBUTE_MAX_UUID) == null) {
+                attribute.addTransientModifier(new AttributeModifier(ATTRIBUTE_MAX_UUID, "max_stamina_increase", WOMRConfigs.BASE_STAMINA_INCREASE.get().floatValue(), Operation.ADDITION));
+            }
         }
     }
 }
